@@ -1,0 +1,59 @@
+class Node:
+    def __init__(self, parent, children, isleaf, value, MaxNode, MinNode, pcount):
+        self.parent = parent 
+        self.children = children
+        self.isleaf = isleaf
+        self.value = value
+        self.MaxNode = MaxNode
+        self.MinNode = MinNode
+        self.pcount = pcount
+
+Graph={
+'A' : Node(None, ['B' ,'C'], False, None, True, False, 2),
+'B' : Node('A', ['D' ,'E'], False, None, False, True, 2 ),
+'C' : Node('A', ['F' ,'G'], False, None, False, True,2),
+'D' : Node('B', ['H' ,'I'], False, None, True, False, 2),
+'E' : Node('B', ['J' ,'K'], False, None, True, False, 2),
+'F' : Node('C', ['L' ,'M'], False, None, True, False, 2),
+'G' : Node('C', ['N' ,'O'], False, None, True, False, 2),
+'H' : Node('D', None, True, 2, False, False, None),
+'I' : Node('D', None, True, 3, False, False, None),
+'J' : Node('E', None, True, 5, False, False, None),
+'K' : Node('E', None, True, 9, False, False, None),
+'L' : Node('F', None, True, 0, False, False, None),
+'M' : Node('F', None, True, 1, False, False, None),
+'N' : Node('G', None, True, 7, False, False, None),
+'O' : Node('G', None, True, 5, False, False, None)
+}
+
+
+
+def alphabeta(Node,alpha, beta):
+    if (Graph[Node].isleaf):
+        return Graph[Node].value
+    
+    elif (Graph[Node].MaxNode):
+        for child in Graph[Node].children:
+            Graph[Node].pcount -= 1
+            alpha = max(alpha,alphabeta(child,alpha, beta))
+            if alpha >= beta:
+                return beta
+            
+        return alpha
+        
+    elif (Graph[Node].MinNode):
+        for child in Graph[Node].children:
+            Graph[Node].pcount -= 1
+            beta = min(beta,alphabeta(child,alpha, beta))
+            if alpha >= beta:
+                return alpha
+            
+        return beta
+
+if __name__ == "__main__":
+    import math
+    print(alphabeta('A', -math.inf, math.inf))
+    #for node in Graph.keys():
+    #    print('{0:10} {1}'.format(node, Graph[node].pcount))
+    prunnedlist = [key for key in Graph.keys() if Graph[key].pcount is not None and Graph[key].pcount > 0]
+    print (prunnedlist)

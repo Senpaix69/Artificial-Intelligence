@@ -1,0 +1,25 @@
+# Problem#1
+import math
+def minimax(curdepth, node,player,values ,TDepth):
+    if curdepth == TDepth:
+        return values[node]
+    if player:
+        return(
+        max(
+            minimax(curdepth + 1,node * 2 , False,values,TDepth),
+            minimax(curdepth + 1,node * 2 +1, False,values,TDepth)
+        )
+        )
+    else:
+         return(
+        min(
+            minimax(curdepth + 1,node * 2 , True,values,TDepth),
+            minimax(curdepth + 1,node * 2 +1, True,values,TDepth)
+        )
+        )
+        
+# Driver Code
+values = [10,6,100,8,1,2,20,4]
+len1 = int(math.log(len(values),2))
+answer = minimax(0,0,True,values,len1)
+print("The Answer by using minimax algo on tree is: ", answer)

@@ -1,0 +1,114 @@
+Idea was to create dataset that is good for binary classification and that gives adequate
+results.
+Dataset and code for reading the file are attached.
+You have to perform the following tasks by completing the given code.
+1- Separate labels from the data
+2- Implement KNN
+3- Perform prediction and calculate accuracy for k= 3, 5, 7, and 11.
+Note: Implement the code in its mentioned location in notebook. Not allowed to use built-in
+ML Algorithm.
+
+
+
+
+import csv as csv
+import numpy as np
+
+data1 = []
+with open('waterQuality.csv', 'r', encoding = 'utf8') as csvfile:
+    readCSV = csv.reader(csvfile, delimiter=',')
+    for pnt1 in readCSV:
+        data1.append(pnt1)
+        
+data1 = data1[1:]
+X =[]
+Y = []
+#Seperate the features and labels in X and Y respectively
+for i in range(len(data1)):
+    X.append(data1[i][0:-1])
+    tmp = data1[i][-1:]
+    Y.append(int(tmp[0]))
+    
+    
+    
+TstX = X[0:200] + X[1800:]
+TstY = Y[0:200] + Y[1800:]
+TrnX = X[200:1800]
+TrnY = Y[200:1800]
+
+
+
+
+
+TrainX = np.array(TrnX)
+TrainX = TrainX.astype(float, order='K', casting='unsafe', subok=True, copy=True)
+TrainY = np.array(TrnY)
+TrainY = TrainY.astype(int, order='K', casting='unsafe', subok=True, copy=True)
+TestX = np.array(TstX)
+TestX = TestX.astype(float, order='K', casting='unsafe', subok=True, copy=True)
+TestY = np.array(TstY)
+TestY = TestY.astype(int, order='K', casting='unsafe', subok=True, copy=True)
+
+
+
+#if any other helping method is required, implement it here
+def classify(data, k):
+    zero = 0
+    one = 0
+    for i in range(0, k):
+        if data[i][-2] == 0:
+            zero += 1
+        else:
+            one += 1
+    if one > zero:
+        return 1
+    else:
+        return 0
+
+
+
+#Implement a function to calculate Distance here
+import math as m
+
+def dis(x1, x2):
+    t_d = 0
+    for i in range(len(x1)):
+        d = float(x1[i]) - float(x2[i])
+        d *= d
+        t_d += d
+    return(m.sqrt(t_d))
+
+
+
+#Implement a function to find accuracy here
+def find_acc(labels, TstY, j):
+    percentage = 0
+    for i in range(len(TstY)):
+        if labels[i][j] == TstY[i]:
+            percentage += 1
+    percentage /= len(TstY)
+    percentage *= 100
+    return percentage
+
+
+
+#Perform your testing here
+import copy as c
+labels = []
+k = [3, 5, 7, 11]
+for i in range(len(TstX)):
+    c_trainX = c.deepcopy(TrnX)
+    for j in range(len(TrnY)):
+        c_trainX[j].append(TrnY[j])
+        c_trainX[j].append(dis(TstX[i], TrnX[j]))
+    c_trainX.sort(key = lambda x:x[-1])
+    labels.append([classify(c_trainX, k[0]), classify(c_trainX, k[1]), classify(c_trainX, k[2]), classify(c_trainX, k[3])])
+
+
+
+#Display accuracy here
+print("Algorithm Accuracy (k = 3): ", find_acc(labels, TstY, 0), '%', sep = '')
+print("Algorithm Accuracy (k = 5): ", find_acc(labels, TstY, 1), '%', sep = '')
+print("Algorithm Accuracy (k = 7): ", find_acc(labels, TstY, 2), '%', sep = '')
+print("Algorithm Accuracy (k = 11): ", find_acc(labels, TstY, 3), '%', sep = '')
+    

@@ -1,0 +1,121 @@
+Task 01: Genetic Algorithm
+(35)
+You have 10 cards numbered 1 to 10. You have to divide them into two piles so that:
+Suppose the initial population:
+X1 = [1, 2, 3, 4, 5]
+X2 = [6, 7, 8, 9, 10]
+a. Fitness Function:
+1- The sum of the first pile is as close as possible to 36.
+2- And the product of all in the second pile is as close as possible to 360.
+b. Parent Selection:
+You must start from the given population. Every time the new population will be
+selected as parents.
+c. Cross over
+Cross over will totally depend on random value. Its your choice to use one-point or
+two-point cross over.
+d. Termination:
+a. Your program will terminate if 90% fitness is achieved or till 6 iterations –
+which ever achieved first. At termination, display the maximum fitness
+achieved and chromosomes that has maximum fitness.
+
+
+
+
+
+
+
+import copy as c
+
+
+#fitness function for chromosome 1 of all populations generated
+def f1(x):
+    sum = 0
+    for i in range(5):
+        sum += x[i]
+    sum -= 36
+    if sum < 0:
+        sum *= -1
+    return sum
+
+#fitness function for chromosome 1 of all populations generated
+def f2(x):
+    product = 1
+    for i in range(5):
+        product *= x[i]
+    product -= 360
+    if product < 0:
+        product *= -1
+    return product
+
+#hard coded one point crossover that splits the chromosome on the index c
+def onePointCrossover(x1, x2, c):
+    for i in range(c):
+        temp = x1[i]
+        x1[i] = x2[i]
+        x2[i] = temp
+
+all_pop1 = []        #for storing all output of chromosomes 1 of all populations
+all_pop2 = []        #for storing all output of chromosomes 2 of all populations
+
+x1 = [1, 2, 3, 4, 5]
+x2 = [6, 7, 8, 9, 10]
+
+counter = 1
+
+for i in range(6):
+    fit1 = f1(x1)
+    fit2 = f2(x2)
+    
+    x1.append(c.deepcopy(fit1))
+    x2.append(c.deepcopy(fit2))
+    
+    #checks if the value is within 10% range of the optimal values (36 and 360)
+    if x1[5] <= 4:
+        x1.append(True)
+    else:
+        x1.append(False)
+        
+    if x2[5] <= 40:
+        x2.append(True)
+    else:
+        x2.append(True)
+    
+    all_pop1.append(c.deepcopy(x1))
+    all_pop2.append(c.deepcopy(x2))
+    
+        
+    all_pop1.sort(key = lambda x:x[5])
+    all_pop2.sort(key = lambda x:x[5])
+        
+    if(all_pop1[0][-1] and all_pop2[0][-1]):
+        break
+    
+    else:
+        del(x1[-1])
+        del(x2[-1])
+        del(x1[-1])
+        del(x2[-1])
+        onePointCrossover(x1, x2, counter)
+        counter += 1
+        if counter > 3:
+            counter = 1
+
+#lower the value, closer the distance of fitness value to optimal fitness value(36 or 360)
+print("First Chromosome of all Populations: ")
+print("The maximum fitness achieved: ", all_pop1[0][5], sep = '')
+print("The maximum fitness was of chromosome: ", end = '')
+
+for i in range(5):
+    print(all_pop1[0][i], end = ' ')
+print('\n\n')
+
+print("Second Chromosome of all Populations: ")
+print("The maximum fitness achieved: ", all_pop2[0][5], sep = '')
+print("The maximum fitness was of chromosome: ", end = '')
+
+for i in range(5):
+    print(all_pop2[0][i], end = ' ')
+
+
+
+
